@@ -10,9 +10,11 @@
             </div>
 
             <div class="card-body p-4">
+                @if(Auth::user()->jabatan != 'hrd')
                 <div class="d-flex justify-content-end mr-3 mb-4">
                     <a href="#" class="btn bg-primary btn-flat text-white" data-toggle="modal" data-target="#pengunduranModal" onclick="tambah_pengunduran()">+ Add Pengunduran</a>
                 </div>
+                @endif
                 <table class="table table-striped table-bordered" style="width:100%" id="table_pengunduran">
                     <thead>
                         <tr>
@@ -20,6 +22,7 @@
                             <th>Karyawan</th>
                             <th>Tanggal</th>
                             <th>Alasan</th>
+                            <th>Surat Pengunduran</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -32,13 +35,16 @@
                             <td>{{ $row->nama }}</td>
                             <td>{{ $row->tanggal }}</td>
                             <td>{{ $row->alasan }}</td>
+                            <td><a href="{{ url('image_surat_pengunduran').'/'.$row->surat_pengunduran }}" target="_blank">Lihat</a></td>
                             <td>{{ $row->status }}</td>
                             <td>
+                                @if($row->status == null)
                                 <a class="btn btn-sm btn-primary text-white" data-toggle="modal" data-target="#pengunduranModal" onclick="edit_pengunduran('{{ $row->id }}');"><span class="material-icons">edit</span></a>
                                 <a class="btn btn-sm btn-danger text-white" data-toggle="modal" data-target="#deleteModal" onclick="delete_pengunduran('{{ $row->id }}');"><span class="material-icons">delete</span></a>
                                 <span class="id_karyawan" hidden>{{ $row->id_karyawan }}</span>
                                 <span class="tanggal" hidden>{{ $row->tanggal }}</span>
                                 <span class="alasan" hidden>{{ $row->alasan }}</span>
+                                @endif
                             </td>
                         </tr>
                         <?php $no++; ?>
@@ -54,7 +60,7 @@
 <div class="modal fade" id="pengunduranModal" tabindex="-1" role="dialog" aria-labelledby="pengunduranModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
-            <form method="POST" id="form">
+            <form method="POST" id="form" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header p-4">
                     <h5 class="modal-title" id="pengunduranModalLabel">New Employee</h5>
@@ -64,24 +70,28 @@
                 </div>
                 <div class="modal-body p-4">
                     <div class="form-group">
-                        <label>Karyawan</label>
-                        <select class="form-control" name="id_karyawan" id="input_id_karyawan" require>
-                            @foreach($user as $v)
-                            <option value="{{ $v->id}}">{{ $v->nama }}</option>
-                            @endforeach
-                        </select>
+                        <label>Id Karyawan</label>
+                        <input type="text" class="form-control" name="id_karyawan" id="input_id_karyawan" value="{{ Auth::user()->id }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Karyawan</label>
+                        <input type="text" class="form-control" value="{{ Auth::user()->nama }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Tanggal</label>
-                        <textarea class="form-control" name="tanggal" id="input_tanggal" required></textarea>
+                        <input type="date" class="form-control" name="tanggal" id="input_tanggal">
                     </div>
                     <div class="form-group">
                         <label>Alasan</label>
-                        <input type="text" class="form-control" name="alasan" id="input_alasan" >
+                        <textarea class="form-control" name="alasan" id="input_alasan" required></textarea>
                     </div>
-                     @if(Auth::user()->jabatan != 'karyawan')
-                        <a id="setuju">Setuju</a>
-                        <a id="tolak">Tolak</a>
+                    <div class="form-group">
+                        <label>Surat</label>
+                        <input type="file" class="form-control" name="foto_surat_pengunduran">
+                    </div>
+                    @if(Auth::user()->jabatan != 'karyawan')
+                    <a id="setuju">Setuju</a>
+                    <a id="tolak">Tolak</a>
                     @endif
                 </div>
                 <div class="modal-footer">
@@ -122,7 +132,6 @@
         $('#pengunduranModalLabel').text('New Pengunduran');
         $('#form').attr('action', '{{ url("insert_pengunduran") }}');
         $('#input_id').val('');
-        $('#input_id_karyawan').val('');
         $('#input_tanggal').val('');
         $('#input_alasan').val('');
     }
@@ -136,8 +145,8 @@
         $('#input_id_karyawan').val(data.find('.id_karyawan').text());
         $('#input_tanggal').val(data.find('.tanggal').text());
         $('#input_alasan').val(data.find('.alasan').text());
-        $('#setuju').attr('href',"{{ url('/pengunduran/setuju') }}/"+id);
-        $('#tolak').attr('href',"{{ url('/pengunduran/tolak') }}/"+id);
+        $('#setuju').attr('href', "{{ url('/pengunduran/setuju') }}/" + id);
+        $('#tolak').attr('href', "{{ url('/pengunduran/tolak') }}/" + id);
     }
 
     function delete_pengunduran(id) {

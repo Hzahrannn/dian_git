@@ -10,9 +10,11 @@
             </div>
 
             <div class="card-body p-4">
+                @if(Auth::user()->jabatan == 'karyawan')
                 <div class="d-flex justify-content-end mr-3 mb-4">
                     <a href="#" class="btn bg-primary btn-flat text-white" data-toggle="modal" data-target="#cutiModal" onclick="tambah_cuti()">+ Add Cuti</a>
                 </div>
+                @endif
                 <table class="table table-striped table-bordered" style="width:100%" id="table_cuti">
                     <thead>
                         <tr>
@@ -34,11 +36,13 @@
                             <td>{{ $row->sampai }}</td>
                             <td>{{ $row->status }}</td>
                             <td>
+                                @if($row->status == null)
                                 <a class="btn btn-sm btn-primary text-white" data-toggle="modal" data-target="#cutiModal" onclick="edit_cuti('{{ $row->id }}');"><span class="material-icons">edit</span></a>
                                 <a class="btn btn-sm btn-danger text-white" data-toggle="modal" data-target="#deleteModal" onclick="delete_cuti('{{ $row->id }}');"><span class="material-icons">delete</span></a>
                                 <span class="id_karyawan" hidden>{{ $row->id_karyawan }}</span>
                                 <span class="dari" hidden>{{ $row->dari }}</span>
                                 <span class="sampai" hidden>{{ $row->sampai }}</span>
+                                @endif
                             </td>
                         </tr>
                         <?php $no++; ?>
@@ -64,20 +68,20 @@
                 </div>
                 <div class="modal-body p-4">
                     <div class="form-group">
-                        <label>Karyawan</label>
-                        <select class="form-control" name="id_karyawan" id="input_id_karyawan" require>
-                            @foreach($user as $v)
-                            <option value="{{ $v->id}}">{{ $v->nama }}</option>
-                            @endforeach
-                        </select>
+                        <label>Id Karyawan</label>
+                        <input type="text" class="form-control" name="id_karyawan" id="input_id_karyawan" value="{{ Auth::user()->id }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Karyawan</label>
+                        <input type="text" class="form-control" value="{{ Auth::user()->nama }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Tanggal Mulai</label>
-                        <textarea class="form-control" name="dari" id="input_dari" required></textarea>
+                        <input type="date" class="form-control" name="dari" id="input_dari" >
                     </div>
                     <div class="form-group">
                         <label>Tanggal Akhir</label>
-                        <input type="text" class="form-control" name="sampai" id="input_sampai" >
+                        <input type="date" class="form-control" name="sampai" id="input_sampai" >
                     </div>
                     @if(Auth::user()->jabatan != 'karyawan')
                         <a id="setuju">Setuju</a>
@@ -122,7 +126,6 @@
         $('#cutiModalLabel').text('New Cuti');
         $('#form').attr('action', '{{ url("insert_cuti") }}');
         $('#input_id').val('');
-        $('#input_id_karyawan').val('');
         $('#input_dari').val('');
         $('#input_sampai').val('');
     }

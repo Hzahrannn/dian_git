@@ -5,10 +5,10 @@
     <div class="row justify-content-center">
         <div class="col-lg-5 col-md-8 col-sm-11 mx-2">
             <div class="card shadow">
-                <div class="card-body p-4">
-                    <h4 class="text-dark font-weight-normal">{{ __('Login') }}</h4>
-                    <p class="text-dark mb-4">Enter your details to continue</p>
-                    
+                <div class="card-body p-4 d-flex">
+                    <div class="justify-content-center">
+                    <img src="https://jpassetsid.jobplanet.com/production/uploads/company/logo/35632/thumb_Untitled-1.jpg" >
+                    </div>
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
                         <div class="form-group">

@@ -10,16 +10,22 @@
             </div>
 
             <div class="card-body p-4">
+                @if(Auth::user()->jabatan != 'direktur')
                 <div class="d-flex justify-content-end mr-3 mb-4">
                     <a href="#" class="btn bg-primary btn-flat text-white" data-toggle="modal" data-target="#penilaianModal" onclick="tambah_penilaian()">+ Add Penilaian</a>
                 </div>
+                @endif
                 <table class="table table-striped table-bordered" style="width:100%" id="table_penilaian">
                     <thead>
                         <tr>
                             <th>No</th>
                             <th>Karyawan</th>
-                            <th>Nilai</th>
+                            <th>Nilai KaBag</th>
+                            <th>Nilai Manajer</th>
+                            <th>Nilai HRD</th>
+                            <th>Total</th>
                             <th>Deskripsi</th>
+                            <th>Tanggal</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -29,13 +35,23 @@
                         <tr id="{{ $row->id }}">
                             <td>{{ $no }}</td>
                             <td>{{ $row->nama }}</td>
-                            <td>{{ $row->nilai }}</td>
+                            <td>{{ $row->nilai_kabag }}</td>
+                            <td>{{ $row->nilai_manajer }}</td>
+                            <td>{{ $row->nilai_hrd }}</td>
+                            <td>{{ ($row->nilai_kabag + $row->nilai_manajer + $row->nilai_hrd)/3 }}</td>
                             <td>{{ $row->deskripsi }}</td>
+                            <td>{{ $row->created_at }}</td>
                             <td>
                                 <a class="btn btn-sm btn-primary text-white" data-toggle="modal" data-target="#penilaianModal" onclick="edit_penilaian('{{ $row->id }}');"><span class="material-icons">edit</span></a>
-                                <a class="btn btn-sm btn-danger text-white" data-toggle="modal" data-target="#deleteModal" onclick="delete_penilaian('{{ $row->id }}');"><span class="material-icons">delete</span></a>
+                                <!-- <a class="btn btn-sm btn-danger text-white" data-toggle="modal" data-target="#deleteModal" onclick="delete_penilaian('id');"><span class="material-icons">delete</span></a> -->
                                 <span class="id_karyawan" hidden>{{ $row->id_karyawan }}</span>
-                                <span class="nilai" hidden>{{ $row->nilai }}</span>
+                                @if(Auth::user()->jabatan == 'hrd')
+                                    <span class="nilai_hrd" hidden>{{ $row->nilai_hrd }}</span>
+                                @elseif(Auth::user()->jabatan == 'manajer')
+                                    <span class="nilai_manajer" hidden>{{ $row->nilai_manajer }}</span>
+                                @elseif(Auth::user()->jabatan == 'kabag')
+                                    <span class="nilai_kabag" hidden>{{ $row->nilai_kabag }}</span>
+                                @endif
                                 <span class="deskripsi" hidden>{{ $row->deskripsi }}</span>
                             </td>
                         </tr>
@@ -61,22 +77,23 @@
                     </button>
                 </div>
                 <div class="modal-body p-4">
-                    <div class="form-group">
+                    <div class="form-group" id="karyawan">
                         <label>Karyawan</label>
-                        <select class="form-control" name="id_karyawan" id="input_id_karyawan" require>
+                        <select class="form-control" name="id_karyawan" id="input_id_karyawan" >
                             @foreach($user as $v)
                             <option value="{{ $v->id}}">{{ $v->nama }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Nilai</label>
-                        <textarea class="form-control" name="nilai" id="input_nilai" required></textarea>
+                        <label>Deskripsi</label>
+                        <textarea class="form-control" name="deskripsi" id="input_deskripsi" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Deskripsi</label>
-                        <input type="text" class="form-control" name="deskripsi" id="input_deskripsi" >
+                        <label>Nilai</label>
+                        <input type="number" class="form-control" name="nilai" id="input_nilai" >
                     </div>
+                    
                 </div>
                 <div class="modal-footer">
                     <input type="text" class="form-control" name="id" id="input_id" hidden>
@@ -119,6 +136,7 @@
         $('#input_id_karyawan').val('');
         $('#input_nilai').val('');
         $('#input_deskripsi').val('');
+        $('#karyawan').show();
     }
 
     function edit_penilaian(id) {
@@ -128,8 +146,15 @@
         $('#form').attr('action', '{{ url("edit_penilaian") }}/' + id);
         $('#input_id').val(id);
         $('#input_id_karyawan').val(data.find('.id_karyawan').text());
-        $('#input_nilai').val(data.find('.nilai').text());
+        @if( Auth::user()->jabatan == 'hrd')
+            $('#input_nilai').val(data.find('.nilai_hrd').text());
+        @elseif ( Auth::user()->jabatan == 'manajer')
+            $('#input_nilai').val(data.find('.nilai_manajer').text());
+        @elseif ( Auth::user()->jabatan == 'kabag')
+            $('#input_nilai').val(data.find('.nilai_kabag').text());
+        @endif
         $('#input_deskripsi').val(data.find('.deskripsi').text());
+        $('#karyawan').hide();
     }
 
     function delete_penilaian(id) {

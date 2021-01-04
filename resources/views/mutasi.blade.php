@@ -10,17 +10,20 @@
             </div>
 
             <div class="card-body p-4">
+                @if(Auth::user()->jabatan == 'hrd')
                 <div class="d-flex justify-content-end mr-3 mb-4">
                     <a href="#" class="btn bg-primary btn-flat text-white" data-toggle="modal" data-target="#mutasiModal" onclick="tambah_mutasi()">+ Add Mutasi</a>
                 </div>
+                @endif
                 <table class="table table-striped table-bordered" style="width:100%" id="table_mutasi">
                     <thead>
                         <tr>
                             <th>No</th>
                             <th>Karyawan</th>
+                            <th>Surat Mutasi</th>
+                            <th>Keputusan</th>
                             <th>Tanggal</th>
-                            <th>Lokasi</th>
-                            <th></th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,8 +32,9 @@
                         <tr id="{{ $row->id }}">
                             <td>{{ $no }}</td>
                             <td>{{ $row->nama }}</td>
-                            <td>{{ $row->tanggal }}</td>
-                            <td>{{ $row->lokasi }}</td>
+                            <td><a href="{{ url('image_surat_mutasi').'/'.$row->surat_mutasi }}" target="_blank">Lihat</a></td>
+                            <td>{{ $row->keputusan }}</td>
+                            <td>{{ $row->created_at }}</td>
                             <td>
                                 <a class="btn btn-sm btn-primary text-white" data-toggle="modal" data-target="#mutasiModal" onclick="edit_mutasi('{{ $row->id }}');"><span class="material-icons">edit</span></a>
                                 <a class="btn btn-sm btn-danger text-white" data-toggle="modal" data-target="#deleteModal" onclick="delete_mutasi('{{ $row->id }}');"><span class="material-icons">delete</span></a>
@@ -49,10 +53,10 @@
 </div>
 <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous"> -->
 
-<div class="modal fade" id="mutasiModal" tabindex="-1" role="dialog" aria-labelledby="mutasiModalLabel" aria-hidden="true">
+<div class="modal fade" id="mutasiModal" role="dialog" aria-labelledby="mutasiModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
-            <form method="POST" id="form">
+            <form method="POST" id="form" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header p-4">
                     <h5 class="modal-title" id="mutasiModalLabel">New Employee</h5>
@@ -61,21 +65,21 @@
                     </button>
                 </div>
                 <div class="modal-body p-4">
-                    <div class="form-group">
-                        <label>Karyawan</label>
+                <div class="form-group">
+                        <label>Nama Karyawan</label>
                         <select class="form-control" name="id_karyawan" id="input_id_karyawan" require>
                             @foreach($user as $v)
-                            <option value="{{ $v->id}}">{{ $v->nama }}</option>
+                            <option value="{{$v->id}}">{{ $v->nama }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Tanggal</label>
-                        <textarea class="form-control" name="tanggal" id="input_tanggal" required></textarea>
+                        <label>Surat</label>
+                        <input type="file" class="form-control" name="foto_surat_mutasi">
                     </div>
                     <div class="form-group">
-                        <label>Lokasi</label>
-                        <input type="text" class="form-control" name="lokasi" id="input_lokasi" >
+                        <label>Keputusan</label>
+                        <textarea class="form-control" name="keputusan" id="input_keputusan" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -110,6 +114,11 @@
 <script>
     $(document).ready(function() {
         $('#table_mutasi').DataTable();
+        $('#input_id_karyawan').select2({
+            width: '100%',
+            placeholder: "Select an Option",
+            allowClear: true
+        });
     });
 
     function tambah_mutasi() {

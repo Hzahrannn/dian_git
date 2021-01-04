@@ -27,17 +27,23 @@ class PengunduranController extends Controller
      */
     public function index()
     {
-        $data['pengunduran'] = Pengunduran::join('user','pengunduran.id_karyawan','=','user.id')->select('pengunduran.*', 'user.nama')->get();
+        $data['pengunduran'] = Pengunduran::join('user', 'pengunduran.id_karyawan', '=', 'user.id')->select('pengunduran.*', 'user.nama')->get();
         $data['user'] = User::all();
         return view('pengunduran', $data);
     }
 
     public function insert(Request $request)
     {
+
+        if ($files = $request->file('foto_surat_pengunduran')) {
+            $name = $files->getClientOriginalName();
+            $files->move('image_surat_pengunduran', $name);
+        }
         $pengunduran = new Pengunduran;
         $pengunduran->id_karyawan = $_POST['id_karyawan'];
         $pengunduran->tanggal = $_POST['tanggal'];
         $pengunduran->alasan = $_POST['alasan'];
+        $pengunduran->surat_pengunduran = $name;
         $pengunduran->save();
 
         return redirect('pengunduran');

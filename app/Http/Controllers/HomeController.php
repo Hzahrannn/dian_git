@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Iklan_lowongan_kerja;
 
 class HomeController extends Controller
 {
@@ -11,10 +12,6 @@ class HomeController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     /**
      * Show the application dashboard.
@@ -23,6 +20,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $data['iklan_lowongan_kerja'] = Iklan_lowongan_kerja::orderBy('id','DESC')->get();
+        return view('home', $data);
+    }
+    public function welcome()
+    {
+        $data['iklan_lowongan_kerja'] = Iklan_lowongan_kerja::orderBy('id','DESC')->get();
+        return view('welcome', $data);
     }
 }

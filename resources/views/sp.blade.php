@@ -10,15 +10,18 @@
             </div>
 
             <div class="card-body p-4">
+                @if(Auth::user()->jabatan == 'hrd')
                 <div class="d-flex justify-content-end mr-3 mb-4">
                     <a href="#" class="btn bg-primary btn-flat text-white" data-toggle="modal" data-target="#spModal" onclick="tambah_sp()">+ Add Sp</a>
                 </div>
+                @endif
                 <table class="table table-striped table-bordered" style="width:100%" id="table_sp">
                     <thead>
                         <tr>
                             <th>No</th>
                             <th>Karyawan</th>
                             <th>Tanggal</th>
+                            <th>Jenis SP</th>
                             <th>Alasan</th>
                             <th>Aksi</th>
                         </tr>
@@ -30,6 +33,7 @@
                             <td>{{ $no }}</td>
                             <td>{{ $row->nama }}</td>
                             <td>{{ $row->tanggal }}</td>
+                            <td>{{ $row->jenis }}</td>
                             <td>{{ $row->alasan }}</td>
                             <td>
                                 <a class="btn btn-sm btn-primary text-white" data-toggle="modal" data-target="#spModal" onclick="edit_sp('{{ $row->id }}');"><span class="material-icons">edit</span></a>
@@ -49,7 +53,7 @@
 </div>
 <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous"> -->
 
-<div class="modal fade" id="spModal" tabindex="-1" role="dialog" aria-labelledby="spModalLabel" aria-hidden="true">
+<div class="modal fade" id="spModal"  role="dialog" aria-labelledby="spModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
             <form method="POST" id="form">
@@ -71,7 +75,15 @@
                     </div>
                     <div class="form-group">
                         <label>Tanggal</label>
-                        <textarea class="form-control" name="tanggal" id="input_tanggal" required></textarea>
+                        <input type="date" class="form-control" name="tanggal" id="input_tanggal" >
+                    </div>
+                    <div class="form-group">
+                        <label>Karyawan</label>
+                        <select class="form-control" name="jenis" id="input_jenis" require>
+                            <option>SP1</option>
+                            <option>SP2</option>
+                            <option>SP3</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Alasan</label>
@@ -110,13 +122,17 @@
 <script>
     $(document).ready(function() {
         $('#table_sp').DataTable();
+        $('#input_id_karyawan').select2({
+            width: '100%',
+            placeholder: "Select an Option",
+            allowClear: true
+        });
     });
 
     function tambah_sp() {
         $('#spModalLabel').text('New Sp');
         $('#form').attr('action', '{{ url("insert_sp") }}');
         $('#input_id').val('');
-        $('#input_id_karyawan').val('');
         $('#input_tanggal').val('');
         $('#input_alasan').val('');
     }

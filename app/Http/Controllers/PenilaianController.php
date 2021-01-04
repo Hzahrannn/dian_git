@@ -37,7 +37,13 @@ class PenilaianController extends Controller
         $penilaian = new Penilaian;
         $penilaian->id_karyawan = $_POST['id_karyawan'];
         $penilaian->deskripsi = $_POST['deskripsi'];
-        $penilaian->nilai = $_POST['nilai'];
+        if(Auth::user()->jabatan == 'hrd'){
+            $penilaian->nilai_hrd = $_POST['nilai'];
+        }elseif(Auth::user()->jabatan == 'manajer'){
+            $penilaian->nilai_manajer = $_POST['nilai'];
+        }elseif(Auth::user()->jabatan == 'kabag'){
+            $penilaian->nilai_kabag = $_POST['nilai'];
+        }
         $penilaian->save();
 
         return redirect('penilaian');
@@ -47,7 +53,13 @@ class PenilaianController extends Controller
         $penilaian =  Penilaian::find($id);
         $penilaian->id_karyawan = $_POST['id_karyawan'];
         $penilaian->deskripsi = $_POST['deskripsi'];
-        $penilaian->nilai = $_POST['nilai'];
+        if(Auth::user()->jabatan == 'hrd'){
+            $penilaian->nilai_hrd = $_POST['nilai'];
+        }elseif(Auth::user()->jabatan == 'manajer'){
+            $penilaian->nilai_manajer = $_POST['nilai'];
+        }elseif(Auth::user()->jabatan == 'kabag'){
+            $penilaian->nilai_kabag = $_POST['nilai'];
+        }
         $penilaian->save();
 
         return redirect('penilaian');

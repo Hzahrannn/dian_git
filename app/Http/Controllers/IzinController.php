@@ -27,7 +27,11 @@ class IzinController extends Controller
      */
     public function index()
     {
-        $data['izin'] = Izin::join('user','izin.id_karyawan','=','user.id')->select('izin.*', 'user.nama')->get();
+        if (Auth::user()->jabatan != 'karyawan') {
+            $data['izin'] = Izin::join('user', 'izin.id_karyawan', '=', 'user.id')->select('izin.*', 'user.nama')->get();
+        } else {
+            $data['izin'] = Izin::join('user', 'izin.id_karyawan', '=', 'user.id')->select('izin.*', 'user.nama')->where('izin.id_karyawan',Auth::user()->id)->get();
+        }
         $data['user'] = User::all();
         return view('izin', $data);
     }
@@ -36,7 +40,7 @@ class IzinController extends Controller
     {
         $izin = new Izin;
         $izin->id_karyawan = $_POST['id_karyawan'];
-        $izin->hari = $_POST['hari'];
+        $izin->izin = $_POST['izin'];
         $izin->alasan = $_POST['alasan'];
         $izin->save();
 

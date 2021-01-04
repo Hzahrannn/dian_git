@@ -12,17 +12,16 @@
 */
 Auth::routes();
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
+Route::get('/', 'HomeController@welcome');
 Route::get('/home', 'HomeController@index');
 
 //Loker
-Route::get('/loker', 'LokerController@index');
-Route::post('/insert_loker', 'LokerController@insert');
-Route::post('/edit_loker/{id}', 'LokerController@edit');
-Route::get('/delete_loker/{id}', 'LokerController@delete');
+Route::get('/iklan_lowongan_kerja', 'IklanLowonganKerjaController@index');
+Route::get('/iklan_lowongan_kerja/{id}', 'IklanLowonganKerjaController@detail');
+Route::post('/insert_iklan_lowongan_kerja', 'IklanLowonganKerjaController@insert');
+Route::post('/edit_iklan_lowongan_kerja/{id}', 'IklanLowonganKerjaController@edit');
+Route::get('/delete_iklan_lowongan_kerja/{id}', 'IklanLowonganKerjaController@delete');
 
 //Lamaran
 Route::get('/lamaran', 'LamaranController@index');
@@ -34,6 +33,7 @@ Route::get('/delete_lamaran/{id}', 'LamaranController@delete');
 Route::get('/absensi', 'AbsensiController@index');
 Route::post('/insert_absensi', 'AbsensiController@insert');
 Route::post('/edit_absensi/{id}', 'AbsensiController@edit');
+Route::post('/absen_pulang/{id}', 'AbsensiController@absen_pulang');
 Route::get('/delete_absensi/{id}', 'AbsensiController@delete');
 
 //Penilaian

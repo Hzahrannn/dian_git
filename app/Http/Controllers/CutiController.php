@@ -27,7 +27,11 @@ class CutiController extends Controller
      */
     public function index()
     {
-        $data['cuti'] = Cuti::join('user','cuti.id_karyawan','=','user.id')->select('cuti.*', 'user.nama')->get();
+        if (Auth::user()->jabatan != 'karyawan') {
+            $data['cuti'] = Cuti::join('user', 'cuti.id_karyawan', '=', 'user.id')->select('cuti.*', 'user.nama')->get();
+        }else{
+            $data['cuti'] = Cuti::join('user', 'cuti.id_karyawan', '=', 'user.id')->select('cuti.*', 'user.nama')->where('cuti.id_karyawan',Auth::user()->id)->get();
+        }
         $data['user'] = User::all();
         return view('cuti', $data);
     }
@@ -73,5 +77,4 @@ class CutiController extends Controller
 
         return redirect('cuti');
     }
-
 }

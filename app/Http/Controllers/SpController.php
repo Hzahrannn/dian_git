@@ -27,8 +27,12 @@ class SpController extends Controller
      */
     public function index()
     {
-        $data['sp'] = Sp::join('user','sp.id_karyawan','=','user.id')->select('sp.*', 'user.nama')->get();
-        $data['user'] = User::all();
+        if (Auth::user()->jabatan != 'karyawan') {
+            $data['sp'] = Sp::join('user', 'sp.id_karyawan', '=', 'user.id')->select('sp.*', 'user.nama')->get();
+        } else {
+            $data['sp'] = Sp::join('user', 'sp.id_karyawan', '=', 'user.id')->select('sp.*', 'user.nama')->where('mutasi.id_karyawan', Auth::user()->id)->get();
+        }
+        $data['user'] = User::where('jabatan', 'karyawan')->get();
         return view('sp', $data);
     }
 
@@ -37,6 +41,7 @@ class SpController extends Controller
         $sp = new Sp;
         $sp->id_karyawan = $_POST['id_karyawan'];
         $sp->tanggal = $_POST['tanggal'];
+        $sp->jenis = $_POST['jenis'];
         $sp->alasan = $_POST['alasan'];
         $sp->save();
 
@@ -47,6 +52,7 @@ class SpController extends Controller
         $sp =  Sp::find($id);
         $sp->id_karyawan = $_POST['id_karyawan'];
         $sp->tanggal = $_POST['tanggal'];
+        $sp->jenis = $_POST['jenis'];
         $sp->alasan = $_POST['alasan'];
         $sp->save();
 

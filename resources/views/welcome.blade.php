@@ -34,7 +34,7 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <body style="background-color:powderblue;">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-5">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/')}}">DIAN</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,6 +62,22 @@
             </div>
         </div>
     </nav>
+    <div class="row">
+        @foreach($iklan_lowongan_kerja as $v)
 
+        <div class="col-sm-4 card">
+            <a href="{{ url('login')}}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ $v->judul }}, {{ $v->nama }}</h5>
+                    <p class="card-text">{{ $v->deskripsi }}</p>
+                    <p class="card-text"><small class="text-muted">{{ $v->created_at }}</small></p>
+                </div>
+            </a>
+        </div>
+
+        @endforeach
+
+    </div>
 </body>
+
 </html>

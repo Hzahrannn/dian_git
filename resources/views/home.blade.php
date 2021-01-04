@@ -3,21 +3,20 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Dashboard</div>
+        @foreach($iklan_lowongan_kerja as $v)
 
+        <div class="col-sm-4 card">
+            <a href="{{ url('iklan_lowongan_kerja').'/'.$v->id }}">
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    You are logged in!
+                    <h5 class="card-title">{{ $v->judul }}, {{ $v->nama }}</h5>
+                    <p class="card-text">{{ $v->deskripsi }}</p>
+                    <p class="card-text"><small class="text-muted">{{ $v->created_at }}</small></p>
                 </div>
-            </div>
+            </a>
         </div>
+
+        @endforeach
+
     </div>
 </div>
 @endsection

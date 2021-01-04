@@ -6,20 +6,22 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header bg-white p-4">
-                <h5>Cuti</h5>
+                <h5>Izin</h5>
             </div>
 
             <div class="card-body p-4">
+                @if(Auth::user()->jabatan == 'karyawan')
                 <div class="d-flex justify-content-end mr-3 mb-4">
                     <a href="#" class="btn bg-primary btn-flat text-white" data-toggle="modal" data-target="#izinModal" onclick="tambah_izin()">+ Add Cuti</a>
                 </div>
+                @endif
                 <table class="table table-striped table-bordered" style="width:100%" id="table_izin">
                     <thead>
                         <tr>
                             <th>No</th>
                             <th>Karyawan</th>
-                            <th>Tanggal Mulai</th>
-                            <th>Tanggal Akhir</th>
+                            <th>Tanggal Ijin</th>
+                            <th>Alasan</th>
                             <th>Status</th>
                             <th>Aksi</th>
                         </tr>
@@ -30,15 +32,17 @@
                         <tr id="{{ $row->id }}">
                             <td>{{ $no }}</td>
                             <td>{{ $row->nama }}</td>
-                            <td>{{ $row->hari }}</td>
+                            <td>{{ $row->izin }}</td>
                             <td>{{ $row->alasan }}</td>
                             <td>{{ $row->status }}</td>
                             <td>
+                                @if($row->status == null)
                                 <a class="btn btn-sm btn-primary text-white" data-toggle="modal" data-target="#izinModal" onclick="edit_izin('{{ $row->id }}');"><span class="material-icons">edit</span></a>
                                 <a class="btn btn-sm btn-danger text-white" data-toggle="modal" data-target="#deleteModal" onclick="delete_izin('{{ $row->id }}');"><span class="material-icons">delete</span></a>
                                 <span class="id_karyawan" hidden>{{ $row->id_karyawan }}</span>
-                                <span class="hari" hidden>{{ $row->hari }}</span>
+                                <span class="izin" hidden>{{ $row->izin }}</span>
                                 <span class="alasan" hidden>{{ $row->alasan }}</span>
+                                @endif
                             </td>
                         </tr>
                         <?php $no++; ?>
@@ -64,24 +68,24 @@
                 </div>
                 <div class="modal-body p-4">
                     <div class="form-group">
-                        <label>Karyawan</label>
-                        <select class="form-control" name="id_karyawan" id="input_id_karyawan" require>
-                            @foreach($user as $v)
-                            <option value="{{ $v->id}}">{{ $v->nama }}</option>
-                            @endforeach
-                        </select>
+                        <label>Id Karyawan</label>
+                        <input type="text" class="form-control" name="id_karyawan" id="input_id_karyawan" value="{{ Auth::user()->id }}" readonly>
                     </div>
                     <div class="form-group">
-                        <label>Lama Izin</label>
-                        <textarea class="form-control" name="hari" id="input_hari" required></textarea>
+                        <label>Nama Karyawan</label>
+                        <input type="text" class="form-control" value="{{ Auth::user()->nama }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Izin</label>
+                        <input type="date" class="form-control" name="izin" id="input_izin">
                     </div>
                     <div class="form-group">
                         <label>Alasan</label>
-                        <input type="text" class="form-control" name="alasan" id="input_alasan" >
+                        <textarea class="form-control" name="alasan" id="input_alasan"></textarea>
                     </div>
                     @if(Auth::user()->jabatan != 'karyawan')
-                        <a id="setuju">Setuju</a>
-                        <a id="tolak">Tolak</a>
+                    <a id="setuju">Setuju</a>
+                    <a id="tolak">Tolak</a>
                     @endif
                 </div>
                 <div class="modal-footer">
@@ -122,8 +126,7 @@
         $('#izinModalLabel').text('New Cuti');
         $('#form').attr('action', '{{ url("insert_izin") }}');
         $('#input_id').val('');
-        $('#input_id_karyawan').val('');
-        $('#input_hari').val('');
+        $('#input_izin').val('');
         $('#input_alasan').val('');
     }
 
@@ -134,10 +137,10 @@
         $('#form').attr('action', '{{ url("edit_izin") }}/' + id);
         $('#input_id').val(id);
         $('#input_id_karyawan').val(data.find('.id_karyawan').text());
-        $('#input_hari').val(data.find('.hari').text());
+        $('#input_izin').val(data.find('.izin').text());
         $('#input_alasan').val(data.find('.alasan').text());
-        $('#setuju').attr('href',"{{ url('/izin/setuju') }}/"+id);
-        $('#tolak').attr('href',"{{ url('/izin/tolak') }}/"+id);
+        $('#setuju').attr('href', "{{ url('/izin/setuju') }}/" + id);
+        $('#tolak').attr('href', "{{ url('/izin/tolak') }}/" + id);
     }
 
     function delete_izin(id) {
