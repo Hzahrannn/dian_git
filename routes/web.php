@@ -22,7 +22,7 @@ Route::get('/iklan_lowongan_kerja/{id}', 'IklanLowonganKerjaController@detail');
 Route::post('/insert_iklan_lowongan_kerja', 'IklanLowonganKerjaController@insert');
 Route::post('/edit_iklan_lowongan_kerja/{id}', 'IklanLowonganKerjaController@edit');
 Route::get('/delete_iklan_lowongan_kerja/{id}', 'IklanLowonganKerjaController@delete');
-
+Route::post('/insert_lamaran', 'IklanLowonganKerjaController@lamaran');
 //Lamaran
 Route::get('/lamaran', 'LamaranController@index');
 Route::post('/insert_lamaran', 'LamaranController@insert');

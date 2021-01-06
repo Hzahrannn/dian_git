@@ -45,6 +45,9 @@
                 <ul class="navbar-nav mr-auto">
                     @if(Auth::user()->jabatan == "hrd")
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url('pengguna') }}">Pengguna</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ url('iklan_lowongan_kerja') }}">Iklan Lowongan Kerja</a>
                     </li>
                     <li class="nav-item">

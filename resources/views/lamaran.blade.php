@@ -20,9 +20,8 @@
                         <tr>
                             <th>No</th>
                             <th>Nama</th>
-                            <th>Asal</th>
                             <th>Posisi</th>
-                            <th>Aksi</th>
+                            <th>cv</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,16 +29,9 @@
                         @foreach($lamaran as $row)
                         <tr id="{{ $row->id }}">
                             <td>{{ $no }}</td>
-                            <td>{{ $row->nama }}</td>
-                            <td>{{ $row->asal }}</td>
-                            <td>{{ $row->posisi }}</td>
-                            <td>
-                                <a class="btn btn-sm btn-primary text-white" data-toggle="modal" data-target="#lamaranModal" onclick="edit_lamaran('{{ $row->id }}');"><span class="material-icons">edit</span></a>
-                                <a class="btn btn-sm btn-danger text-white" data-toggle="modal" data-target="#deleteModal" onclick="delete_lamaran('{{ $row->id }}');"><span class="material-icons">delete</span></a>
-                                <span class="nama" hidden>{{ $row->nama }}</span>
-                                <span class="asal" hidden>{{ $row->asal }}</span>
-                                <span class="posisi" hidden>{{ $row->posisi }}</span>
-                            </td>
+                            <td>{{ $row->nama_user }}</td>
+                            <td>{{ $row->nama_loker }}</td>
+                            <td><a href="{{ url('image_cv').'/'.$row->cv }}" target="_blank">Lihat</a></td>
                         </tr>
                         <?php $no++; ?>
                         @endforeach

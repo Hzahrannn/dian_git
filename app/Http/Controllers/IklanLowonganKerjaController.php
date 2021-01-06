@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Iklan_lowongan_kerja;
+use App\Lamaran;
 
 class IklanLowonganKerjaController extends Controller
 {
@@ -28,6 +29,14 @@ class IklanLowonganKerjaController extends Controller
     {
         $data['iklan_lowongan_kerja'] = Iklan_lowongan_kerja::orderBy('id','DESC')->get();
         return view('iklan_lowongan_kerja', $data);
+    }
+
+    public function detail($id)
+    {
+        $data['iklan_lowongan_kerja'] = Iklan_lowongan_kerja::where('id',$id)->get();
+        $data['lamaran'] = Lamaran::where('id_pelamar',Auth::user()->id)->where('id_lowongan_kerja',$id)->get();
+        $data['id'] = $id;
+        return view('detail_iklan_lowongan_kerja', $data);
     }
 
     public function insert(Request $request)
